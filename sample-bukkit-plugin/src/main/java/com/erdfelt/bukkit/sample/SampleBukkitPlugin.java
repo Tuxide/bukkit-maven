@@ -50,7 +50,8 @@ public class SampleBukkitPlugin extends JavaPlugin {
         debug("Plugin Enabled");
 
         PluginManager pm = getServer().getPluginManager();
-        pm.registerEvent(Event.Type.BLOCK_PLACE, this.blockListener, Event.Priority.Normal, this);
+        pm.registerEvent(Event.Type.BLOCK_DAMAGE, this.blockListener, Event.Priority.Normal, this);
+        pm.registerEvent(Event.Type.BLOCK_BREAK, this.blockListener, Event.Priority.Normal, this);
     }
 
     public void toggleActivePlayer(Player player) {
