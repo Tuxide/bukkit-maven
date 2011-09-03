@@ -2,10 +2,13 @@ package com.erdfelt.bukkit.sample;
 
 import java.util.Random;
 
+import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.World;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockDamageEvent;
 import org.bukkit.event.block.BlockListener;
+import org.bukkit.inventory.ItemStack;
 
 public class MagicStixBlockListener extends BlockListener {
     private SampleBukkitPlugin plugin;
@@ -23,16 +26,21 @@ public class MagicStixBlockListener extends BlockListener {
     @Override
     public void onBlockBreak(BlockBreakEvent event) {
         plugin.debug("onBlockBreak() - %s", event.getBlock().getType());
-        if (!plugin.isUserActive(event.getPlayer())) {
+        if (plugin.isUserActive(event.getPlayer())) {
+            Location loc = event.getBlock().getLocation();
+            World world = event.getPlayer().getWorld();
+            ItemStack torch = new ItemStack(Material.TORCH, 1);
+            world.dropItemNaturally(loc, torch);
             return;
         }
     }
 
     @Override
     public void onBlockDamage(BlockDamageEvent event) {
-        if (!plugin.isUserActive(event.getPlayer())) {
-            plugin.debug("onBlockDamage() - %s (with %s)", event.getBlock().getType(), event.getItemInHand().getType());
+        if (plugin.isUserActive(event.getPlayer())) {
             if (event.getItemInHand().getType() == Material.STICK) {
+                plugin.debug("onBlockDamage() - %s (with %s)", event.getBlock().getType(), event.getItemInHand()
+                        .getType());
                 event.getBlock().setType(randomMaterial());
             }
             return;
