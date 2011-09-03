@@ -1,0 +1,9 @@
+name: SampleBukkit
+main: com.erdfelt.bukkit.sample.SampleBukkitPlugin
+version: 0.0.1-SNAPSHOT
+description: >
+             Sample Bukkit Plugin
+commands:
+    magicstix:
+        description: Magic Stix
+        usage: magicstix
