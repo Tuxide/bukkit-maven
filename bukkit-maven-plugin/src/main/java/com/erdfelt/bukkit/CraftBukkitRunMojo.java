@@ -1,12 +1,14 @@
 package com.erdfelt.bukkit;
 
 import java.io.File;
+import java.io.FileReader;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 
 import org.apache.maven.model.Resource;
@@ -16,8 +18,10 @@ import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.project.MavenProject;
 import org.codehaus.plexus.interpolation.os.Os;
 import org.codehaus.plexus.util.FileUtils;
+import org.codehaus.plexus.util.IOUtil;
 import org.codehaus.plexus.util.StringUtils;
 import org.codehaus.plexus.util.cli.CommandLineUtils;
+import org.yaml.snakeyaml.Yaml;
 
 /**
  * Run the project, that has a plugin.yml present, as a plugin in the CraftBukkit server.
@@ -51,7 +55,32 @@ public class CraftBukkitRunMojo extends AbstractMojo {
      */
     private File           jarfile;
 
-    private void assertResourceExists(String path) throws MojoExecutionException {
+    private void assertPluginYmlValid(File pluginYml) throws MojoFailureException {
+        Yaml yaml = new Yaml();
+        FileReader reader = null;
+        try {
+            reader = new FileReader(pluginYml);
+            @SuppressWarnings("unchecked")
+            Map<String, Object> yml = (Map<String, Object>) yaml.load(reader);
+            String mainClass = (String) yml.get("main");
+            if (StringUtils.isBlank(mainClass)) {
+                throw new MojoFailureException("plugin.yml is missing required \"main:\" directive");
+            }
+            mainClass = mainClass.replace(".", File.separator) + ".class";
+            File classesDir = new File(project.getBuild().getOutputDirectory());
+            File pluginClassFile = new File(classesDir, mainClass);
+            if (pluginClassFile.exists() == false) {
+                throw new MojoFailureException("plugin.yml has an invalid \"main:\" directive, the class defined ["
+                        + mainClass + "] does not exist in your Jar file");
+            }
+        } catch (IOException e) {
+            throw new MojoFailureException("plugin.yml is invalid, does not parse as valid YML", e);
+        } finally {
+            IOUtil.close(reader);
+        }
+    }
+
+    private File assertResourceExists(String path) throws MojoExecutionException {
         List<String> checkedPaths = new ArrayList<String>();
 
         @SuppressWarnings("unchecked")
@@ -60,7 +89,7 @@ public class CraftBukkitRunMojo extends AbstractMojo {
             File resFile = new File(res.getDirectory(), path);
             if (resFile.exists()) {
                 getLog().debug("Found '" + path + "' at " + resFile.getAbsolutePath());
-                return; // found it
+                return resFile; // found it
             }
             checkedPaths.add(resFile.getAbsolutePath());
         }
@@ -76,9 +105,19 @@ public class CraftBukkitRunMojo extends AbstractMojo {
 
     }
 
+    private void copyFile(String fileDescription, File srcFile, File destFile) throws MojoExecutionException {
+        try {
+            FileUtils.copyFile(srcFile, destFile);
+        } catch (IOException e) {
+            throw new MojoExecutionException("Unable to copy " + fileDescription + "\nFrom: " + srcFile + "\nTo: "
+                    + destFile, e);
+        }
+    }
+
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
-        assertResourceExists("plugin.yml");
+        File pluginYml = assertResourceExists("plugin.yml");
+        assertPluginYmlValid(pluginYml);
         // TODO: assertProjectJarExists();
 
         getLog().info("Project jar: " + jarfile.getAbsolutePath() + " (exists:" + jarfile.exists() + ")");
@@ -93,14 +132,16 @@ public class CraftBukkitRunMojo extends AbstractMojo {
         File craftBukkitJarSrc = findJar(org.bukkit.craftbukkit.Main.class);
         getLog().info("CraftBukkit JAR: " + craftBukkitJarSrc);
 
+        // Setup the CraftBukkit Main Jar
         File craftBukkitJarDest = new File(craftbukkitHome, craftBukkitJarSrc.getName());
-        try {
-            FileUtils.copyFile(craftBukkitJarSrc, craftBukkitJarDest);
-        } catch (IOException e) {
-            throw new MojoExecutionException("Unable to copy craftbukkit jar\nFrom: " + craftBukkitJarSrc + "\nTo: "
-                    + craftBukkitJarDest, e);
-        }
+        copyFile("CraftBukkit Jar", craftBukkitJarSrc, craftBukkitJarDest);
 
+        // Copy in the plugin jar
+        File pluginDir = new File(craftbukkitHome, "plugins");
+        File destPluginJar = new File(pluginDir, jarfile.getName());
+        copyFile("Project Plugin JAR", jarfile, destPluginJar);
+
+        // Start CraftBukkit
         try {
             List<String> cmds = new ArrayList<String>();
             cmds.add(getJavaExecutable());

@@ -5,9 +5,9 @@ import org.bukkit.event.block.BlockDamageEvent;
 import org.bukkit.event.block.BlockListener;
 
 public class MagicStixBlockListener extends BlockListener {
-    private SampleBasicPlugin plugin;
+    private SampleBukkitPlugin plugin;
 
-    public MagicStixBlockListener(SampleBasicPlugin plugin) {
+    public MagicStixBlockListener(SampleBukkitPlugin plugin) {
         this.plugin = plugin;
     }
 

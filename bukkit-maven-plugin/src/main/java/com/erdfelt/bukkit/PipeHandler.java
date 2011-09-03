@@ -5,7 +5,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 
 public class PipeHandler extends Thread {
-    private static final int   BUFSIZE = 1024;
+    private static final int   BUFSIZE = 4;
     private final InputStream  in;
     private final OutputStream out;
 

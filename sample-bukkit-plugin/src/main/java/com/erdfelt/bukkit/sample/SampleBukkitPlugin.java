@@ -14,10 +14,10 @@ import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
-public class SampleBasicPlugin extends JavaPlugin {
-    private static final Logger                 log           = Logger.getLogger(SampleBasicPlugin.class.getName());
+public class SampleBukkitPlugin extends JavaPlugin {
+    private static final Logger                 log           = Logger.getLogger(SampleBukkitPlugin.class.getName());
 
-    private String                              pluginId      = SampleBasicPlugin.class.getSimpleName();
+    private String                              pluginId      = SampleBukkitPlugin.class.getSimpleName();
     private final MagicStixBlockListener        blockListener = new MagicStixBlockListener(this);
     private final Map<Player, ArrayList<Block>> enabledUsers  = new HashMap<Player, ArrayList<Block>>();
 
