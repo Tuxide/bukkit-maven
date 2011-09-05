@@ -46,8 +46,8 @@
     </dependency>
     <dependency>
       <groupId>org.bukkit</groupId>
-      <artifactId>craftbukkit-1.7.3</artifactId>
-      <version>ci-1060-0.0.1-SNAPSHOT</version>
+      <artifactId>craftbukkit</artifactId>
+      <version>0.0.1-ci1060</version>
     </dependency>
   </dependencies>
   <build>

@@ -1,0 +1,11 @@
+The following JAR files were built by Joakim Erdfelt (non-official)
+
+These are not official CraftBukkit jars.
+These were built using the same revision as found in build #1060 (recommended)
+
+  http://ci.bukkit.org/job/dev-CraftBukkit/1060/
+
+You can find the tweaks to the maven build, and a branch for this build at
+
+  https://github.com/joakime/CraftBukkit  (branch 'craftbukkit-ci-1060')
+

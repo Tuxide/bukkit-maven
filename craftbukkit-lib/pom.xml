@@ -8,13 +8,10 @@
     <version>0.0.1-SNAPSHOT</version>
   </parent>
   <groupId>org.bukkit</groupId>
-  <artifactId>craftbukkit-1.7.3</artifactId>
-  <version>ci-1060-0.0.1-SNAPSHOT</version>
-  <name>Bukkit Maven :: CraftBukkit Stable Release</name>
+  <artifactId>craftbukkit</artifactId>
+  <version>0.0.1-ci1060</version>
+  <name>Bukkit Maven :: CraftBukkit Stable Release #1060</name>
   <packaging>pom</packaging>
-  <properties>
-    <craftbukkit-version>0.0.1-SNAPSHOT</craftbukkit-version>
-  </properties>
   <build>
     <plugins>
       <plugin>
@@ -23,7 +20,7 @@
         <version>1.5</version>
         <executions>
           <execution>
-            <id>attach-craftbukkit-jar</id>
+            <id>attach-craftbukkit-jars</id>
             <phase>package</phase>
             <goals>
               <goal>attach-artifact</goal>
@@ -31,12 +28,17 @@
             <configuration>
               <artifacts>
                 <artifact>
-                  <file>${project.basedir}/libs/craftbukkit-${craftbukkit-version}.jar</file>
+                  <file>${project.basedir}/libs/craftbukkit-${project.version}.jar</file>
                   <type>jar</type>
                 </artifact>
                 <artifact>
-                  <file>${project.basedir}/libs/craftbukkit-${craftbukkit-version}-sources.jar</file>
+                  <file>${project.basedir}/libs/craftbukkit-${project.version}-sources.jar</file>
                   <classifier>sources</classifier>
+                  <type>jar</type>
+                </artifact>
+                <artifact>
+                  <file>${project.basedir}/libs/craftbukkit-${project.version}-javadoc.jar</file>
+                  <classifier>javadoc</classifier>
                   <type>jar</type>
                 </artifact>
               </artifacts>

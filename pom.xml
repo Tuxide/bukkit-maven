@@ -8,6 +8,7 @@
   <name>Bukkit Maven :: Parent</name>
   <packaging>pom</packaging>
   <modules>
+    <module>bukkit-lib</module>
     <module>craftbukkit-lib</module>
     <module>bukkit-maven-plugin</module>
     <module>sample-bukkit-plugin</module>
