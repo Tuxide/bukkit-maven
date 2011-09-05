@@ -1,11 +1,9 @@
 package com.erdfelt.bukkit.sample;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.logging.Logger;
 
-import org.bukkit.block.Block;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -15,18 +13,19 @@ import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class SampleBukkitPlugin extends JavaPlugin {
-    private static final Logger                 log           = Logger.getLogger(SampleBukkitPlugin.class.getName());
+    private static final Logger    log           = Logger.getLogger(SampleBukkitPlugin.class.getName());
 
-    private String                              pluginId      = SampleBukkitPlugin.class.getSimpleName();
-    private final MagicStixBlockListener        blockListener = new MagicStixBlockListener(this);
-    private final Map<Player, ArrayList<Block>> enabledUsers  = new HashMap<Player, ArrayList<Block>>();
+    private String                 pluginId      = SampleBukkitPlugin.class.getSimpleName();
+    private MagicStixBlockListener blockListener = new MagicStixBlockListener(this);
+    private MagicStixUserListener  userListener  = new MagicStixUserListener(this);
+    private Set<Player>            enabledUsers  = new HashSet<Player>();
 
     public void debug(String format, Object... args) {
         log.info(String.format("[" + pluginId + "] " + format, args));
     }
 
     public boolean isUserActive(Player player) {
-        return this.enabledUsers.containsKey(player);
+        return this.enabledUsers.contains(player);
     }
 
     @Override
@@ -52,6 +51,11 @@ public class SampleBukkitPlugin extends JavaPlugin {
         PluginManager pm = getServer().getPluginManager();
         pm.registerEvent(Event.Type.BLOCK_DAMAGE, this.blockListener, Event.Priority.Normal, this);
         pm.registerEvent(Event.Type.BLOCK_BREAK, this.blockListener, Event.Priority.Normal, this);
+        pm.registerEvent(Event.Type.PLAYER_QUIT, this.userListener, Event.Priority.Normal, this);
+    }
+
+    public void removeUser(Player player) {
+        enabledUsers.remove(player);
     }
 
     public void toggleActivePlayer(Player player) {
@@ -59,7 +63,7 @@ public class SampleBukkitPlugin extends JavaPlugin {
             this.enabledUsers.remove(player);
             player.sendMessage("MagicStix Disabled");
         } else {
-            enabledUsers.put(player, null);
+            enabledUsers.add(player);
             player.sendMessage("MagicStix Enabled");
         }
     }
