@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>com.erdfelt.bukkit</groupId>
+    <artifactId>bukkit-maven-parent</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+  </parent>
+  <groupId>org.bukkit</groupId>
+  <artifactId>bukkit</artifactId>
+  <version>0.0.1-ci804</version>
+  <name>Bukkit Maven :: Bukkit Recommended Builds #804</name>
+  <packaging>pom</packaging>
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>build-helper-maven-plugin</artifactId>
+        <version>1.5</version>
+        <executions>
+          <execution>
+            <id>attach-bukkit-jars</id>
+            <phase>package</phase>
+            <goals>
+              <goal>attach-artifact</goal>
+            </goals>
+            <configuration>
+              <artifacts>
+                <artifact>
+                  <file>${project.basedir}/libs/bukkit-${project.version}.jar</file>
+                  <type>jar</type>
+                </artifact>
+                <artifact>
+                  <file>${project.basedir}/libs/bukkit-${project.version}-sources.jar</file>
+                  <classifier>sources</classifier>
+                  <type>jar</type>
+                </artifact>
+                <artifact>
+                  <file>${project.basedir}/libs/bukkit-${project.version}-javadoc.jar</file>
+                  <classifier>javadoc</classifier>
+                  <type>jar</type>
+                </artifact>
+              </artifacts>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+</project>

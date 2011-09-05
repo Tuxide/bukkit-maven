@@ -1,0 +1,11 @@
+The following JAR files were built by Joakim Erdfelt (non-official)
+
+These are not official Bukkit jars.
+These were built using the same revision as found in build #804 (recommended)
+
+  http://ci.bukkit.org/job/dev-Bukkit/804/
+
+You can find the tweaks to the maven build, and a branch for this build at
+
+  https://github.com/joakime/Bukkit  (branch 'bukkit-ci-804')
+
